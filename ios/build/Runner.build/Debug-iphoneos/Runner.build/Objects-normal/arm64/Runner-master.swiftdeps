@@ -1,0 +1,6 @@
+version: "Apple Swift version 5.5.1 (swiftlang-1300.0.31.4 clang-1300.0.29.6)"
+options: "5de255d08ce10734c909426fca5c3eec3d71539bb2ddc25bceaa46b4682cf8c2"
+build_start_time: [1639202271, 254173994]
+build_end_time: [1639202271, 900377988]
+inputs:
+  "/Users/boyw31/Downloads/flutteroc/ios/Runner/AppDelegate.swift": [1634329960, 0]
