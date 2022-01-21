@@ -140,7 +140,8 @@ class _SlidingMenuScreenState extends State<SlidingMenuScreen> {
     var response = await _userRepository.logout();
     if (response is Result) {
       UserManager().saveUser(null);
-      Navigator.of(context).pushReplacement(SplashScreen.screen());
+      Navigator.of(context).pushAndRemoveUntil(
+          SplashScreen.screen(), (Route<dynamic> route) => false);
     }
   }
 }
