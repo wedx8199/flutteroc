@@ -1,23 +1,23 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutteroc/screens/screens.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'imgfull.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart' as intl;
 import 'package:sticky_grouped_list/sticky_grouped_list.dart';
 
-class FoodItems extends StatefulWidget {
+class FoodTile extends StatefulWidget {
   List list;
   int tableid;
   final VoidCallback refresh;
-  FoodItems({required this.list, required this.tableid, required this.refresh});
+  FoodTile({required this.list, required this.tableid, required this.refresh});
   @override
-  _FoodItemsState createState() => _FoodItemsState();
+  _FoodTileState createState() => _FoodTileState();
 }
 
-class _FoodItemsState extends State<FoodItems> {
+class _FoodTileState extends State<FoodTile> {
   final formatter = intl.NumberFormat.decimalPattern();
   final scrollController = GroupedItemScrollController();
   final _form = GlobalKey<FormState>(); //for storing form state.
@@ -88,7 +88,7 @@ class _FoodItemsState extends State<FoodItems> {
 
   Future<List> getCat() async {
     final rep =
-        await http.get(Uri.parse("http://thunganoc377.knssoftworks.com/first"));
+    await http.get(Uri.parse("http://thunganoc377.knssoftworks.com/first"));
     if (rep.statusCode == 200) {
       // If the server did return a 200 OK response,
       // then parse the JSON.
@@ -159,11 +159,11 @@ class _FoodItemsState extends State<FoodItems> {
                       return PopupMenuButton<String>(
                           itemBuilder: (context) => snapshot.data!
                               .map((item) => PopupMenuItem<String>(
-                                    value: item['id'].toString(),
-                                    child: Text(
-                                      item['cat_name'].toString(),
-                                    ),
-                                  ))
+                            value: item['id'].toString(),
+                            child: Text(
+                              item['cat_name'].toString(),
+                            ),
+                          ))
                               .toList(),
                           onSelected: (value) {
                             //print(value);
@@ -241,36 +241,36 @@ class _FoodItemsState extends State<FoodItems> {
                               ),
                               GestureDetector(
                                 child: Hero(
-                                    tag: 'imageHero',
-                                    child: Padding(
-                                      padding: EdgeInsets.symmetric(vertical: 10.0),
-                                      child: CachedNetworkImage(
-                                        imageUrl:
-                                        "http://thunganoc377.knssoftworks.com/public/source/foodimg/" +
-                                            element['img'].toString(),
-                                        width: MediaQuery.of(context).size.width,
-                                        height: 200,
-                                        placeholder: (context, url) => Center(
-                                            child: Container(
-                                                width: MediaQuery.of(context)
-                                                    .size
-                                                    .width,
-                                                height: MediaQuery.of(context)
-                                                    .size
-                                                    .height,
-                                                child:
-                                                new CircularProgressIndicator())),
-                                        errorWidget: (context, url, error) =>
-                                            Icon(Icons.error),
-                                      ),
+                                  tag: 'imageHero',
+                                  child: Padding(
+                                    padding: EdgeInsets.symmetric(vertical: 10.0),
+                                    child: CachedNetworkImage(
+                                      imageUrl:
+                                      "http://thunganoc377.knssoftworks.com/public/source/foodimg/" +
+                                          element['img'].toString(),
+                                      width: MediaQuery.of(context).size.width,
+                                      height: 200,
+                                      placeholder: (context, url) => Center(
+                                          child: Container(
+                                              width: MediaQuery.of(context)
+                                                  .size
+                                                  .width,
+                                              height: MediaQuery.of(context)
+                                                  .size
+                                                  .height,
+                                              child:
+                                              new CircularProgressIndicator())),
+                                      errorWidget: (context, url, error) =>
+                                          Icon(Icons.error),
                                     ),
-                                    ),
+                                  ),
+                                ),
                                 onTap: () {
                                   String imgname = element['img'].toString();
                                   Navigator.push(context,
                                       MaterialPageRoute(builder: (_) {
-                                    return DetailScreen(name: imgname);
-                                  }));
+                                        return FoodImageFullScreen(name: imgname);
+                                      }));
                                 },
                               ),
                             ],
@@ -327,8 +327,8 @@ class _FoodItemsState extends State<FoodItems> {
                     children: [
                       CachedNetworkImage(
                         imageUrl:
-                            "http://thunganoc377.knssoftworks.com/public/source/foodimg/" +
-                                element['img'].toString(),
+                        "http://thunganoc377.knssoftworks.com/public/source/foodimg/" +
+                            element['img'].toString(),
                         width: MediaQuery.of(context).size.width,
                         height: 200,
                         fit: BoxFit.cover,
@@ -337,14 +337,14 @@ class _FoodItemsState extends State<FoodItems> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Expanded(
-                              child: ListTile(title: Text(element['name'])),
+                            child: ListTile(title: Text(element['name'])),
                           ),
                           Spacer(),
                           Expanded(
                             child: ListTile(
                               title: Text(formatter
-                                      .format(element['price'])
-                                      .toString() +
+                                  .format(element['price'])
+                                  .toString() +
                                   ' đ'),
                             ),
                           ),

@@ -1,17 +1,24 @@
 import 'package:flutter/material.dart';
-import 'package:flutteroc/sidebar.dart';
+import 'package:flutteroc/components/tables/table_tile.dart';
+import 'package:flutteroc/screens/screens.dart';
 import 'dart:async';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'list/listTable.dart';
+import 'package:flutteroc/components/components.dart';
 
 
-class Tables extends StatefulWidget {
+class HomeScreen extends StatefulWidget {
+  static MaterialPageRoute screen() {
+    return MaterialPageRoute(builder: (context) {
+      return HomeScreen();
+    });
+  }
+
   @override
-  _TablesState createState() => _TablesState();
+  tables_screen createState() => tables_screen();
 }
 
-class _TablesState extends State<Tables> {
+class tables_screen extends State<HomeScreen> {
   void _f5() {
     setState(() {
       //You can also make changes to your state here.
@@ -45,7 +52,7 @@ class _TablesState extends State<Tables> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _drawerKey,
-      drawer: Sidebar(),
+      drawer: SlidingMenuScreen(),
       appBar: AppBar(
         backgroundColor: Color.fromRGBO(14, 28, 71, 1),
         leading: IconButton(
@@ -73,7 +80,7 @@ class _TablesState extends State<Tables> {
             List<Widget> children;
             if (snapshot.hasData) {
               children = <Widget>[
-                Expanded(child: Items(list: snapshot.data!)),
+                Expanded(child: TableTile(list: snapshot.data!)),
               ];
             } else if (snapshot.hasError) {
               children = <Widget>[

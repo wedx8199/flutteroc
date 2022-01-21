@@ -3,15 +3,15 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/services.dart';
 
 
-class DetailScreen extends StatefulWidget {
+class FoodImageFullScreen extends StatefulWidget {
   String name;
-  DetailScreen({required this.name});
+  FoodImageFullScreen({required this.name});
 
   @override
-  _DetailScreenState createState() => _DetailScreenState();
+  _FoodImageFullScreenState createState() => _FoodImageFullScreenState();
 }
 
-class _DetailScreenState extends State<DetailScreen> {
+class _FoodImageFullScreenState extends State<FoodImageFullScreen> {
   @override
   initState() {
     SystemChrome.setEnabledSystemUIOverlays([]);

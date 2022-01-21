@@ -1,12 +1,11 @@
-import 'package:flutter/material.dart';
-import 'dart:async';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
-import '../pickFood.dart';
 
-class Items extends StatelessWidget {
+import 'package:flutter/material.dart';
+import 'package:flutteroc/screens/screens.dart';
+
+class TableTile extends StatelessWidget {
   List list;
-  Items({required this.list});
+
+  TableTile({required this.list});
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +39,7 @@ class Items extends StatelessWidget {
                 onTap: () => Navigator.of(context).push(
                   MaterialPageRoute(
                       builder: (BuildContext context) =>
-                          Food(list: list, index: index)),
+                          FoodsScreen(list: list, index: index)),
                 ),
                 child: Container(
                     padding: EdgeInsets.all(10.0),

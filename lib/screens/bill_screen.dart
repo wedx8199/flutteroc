@@ -1,13 +1,9 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:collection/collection.dart';
 import 'package:flutteroc/main.dart';
-import 'dart:async';
+import 'package:flutteroc/screens/screens.dart';
 import 'package:http/http.dart' as http;
-import 'dart:convert';
 import 'package:flushbar/flushbar.dart';
 import 'package:intl/intl.dart' as intl;
-import '../pickTable.dart';
 
 class BillItems extends StatefulWidget {
   List list;
@@ -85,7 +81,7 @@ class _BillItemsState extends State<BillItems> {
         });
 
     Navigator.of(context).pushReplacement(
-      MaterialPageRoute(builder: (BuildContext context) => Tables()),
+      MaterialPageRoute(builder: (BuildContext context) => HomeScreen()),
     );
 
     Flushbar(

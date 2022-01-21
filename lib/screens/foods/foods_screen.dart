@@ -1,24 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:flutteroc/components/components.dart';
 
-import 'package:flutteroc/sidebar.dart';
+import '../screens.dart';
 import 'dart:async';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'list/listBill.dart';
-import 'list/listFood.dart';
-import 'list/listSearch.dart';
+import 'package:flutteroc/screens/screens.dart';
 
-class Food extends StatefulWidget {
+class FoodsScreen extends StatefulWidget {
   List list;
   int index;
 
-  Food({required this.list, required this.index});
+  FoodsScreen({required this.list, required this.index});
 
   @override
-  _FoodState createState() => _FoodState();
+  _FoodsScreenState createState() => _FoodsScreenState();
 }
 
-class _FoodState extends State<Food> {
+class _FoodsScreenState extends State<FoodsScreen> {
   @override
   _f5() {
     setState(() {
@@ -89,7 +88,7 @@ class _FoodState extends State<Food> {
                 tooltip: 'Search',
                 onPressed: () => Navigator.of(context).push(
                   MaterialPageRoute(
-                      builder: (BuildContext context) => SearchItems(
+                      builder: (BuildContext context) => SearchingFoodsScreen(
                           tableid: widget.list[widget.index]['id'])),
                 ),
               ),
@@ -108,7 +107,7 @@ class _FoodState extends State<Food> {
                       if (snapshot.hasData) {
                         children = <Widget>[
                           Expanded(
-                              child: FoodItems(
+                              child: FoodTile(
                                   list: snapshot.data!,
                                   tableid: widget.list[widget.index]['id'],
                                   refresh: _f5)),

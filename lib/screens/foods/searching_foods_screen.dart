@@ -2,20 +2,20 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'imgfull.dart';
-import 'entity/food.dart';
+import 'package:flutteroc/models/models.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart' as intl;
+import 'package:flutteroc/screens/screens.dart';
 
-class SearchItems extends StatefulWidget {
+class SearchingFoodsScreen extends StatefulWidget {
   int tableid;
-  SearchItems({required this.tableid});
+  SearchingFoodsScreen({required this.tableid});
   @override
-  _SearchItemsState createState() => _SearchItemsState();
+  _SearchingFoodsScreenState createState() => _SearchingFoodsScreenState();
 }
 
-class _SearchItemsState extends State<SearchItems> {
+class _SearchingFoodsScreenState extends State<SearchingFoodsScreen> {
   final formatter = intl.NumberFormat.decimalPattern();
   final _form = GlobalKey<FormState>(); //for storing form state.
 
@@ -256,7 +256,7 @@ class _SearchItemsState extends State<SearchItems> {
                                       String imgname = _fudsOnSearch[index].img.toString();
                                       Navigator.push(context,
                                           MaterialPageRoute(builder: (_) {
-                                            return DetailScreen(name: imgname);
+                                            return FoodImageFullScreen(name: imgname);
                                           }));
                                     },
                                   ),
