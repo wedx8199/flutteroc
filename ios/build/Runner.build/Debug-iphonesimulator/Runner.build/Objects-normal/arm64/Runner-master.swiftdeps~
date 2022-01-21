@@ -1,0 +1,6 @@
+version: "Apple Swift version 5.5 (swiftlang-1300.0.31.1 clang-1300.0.29.1)"
+options: "5de255d08ce10734c909426fca5c3eec3d71539bb2ddc25bceaa46b4682cf8c2"
+build_start_time: [1638075483, 350246906]
+build_end_time: [1638075485, 871795177]
+inputs:
+  "/Users/boyw31/Downloads/70percent (1)/fluttercrudphp/ios/Runner/AppDelegate.swift": [1634329960, 0]
