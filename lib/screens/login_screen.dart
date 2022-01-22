@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutteroc/managers/user_manager.dart';
-import 'package:flutteroc/network/response.dart';
 import 'package:flutteroc/repositories/user_repository.dart';
 import 'package:flutteroc/utils/app_colors.dart';
 import 'package:flutteroc/utils/widget_utils.dart';
@@ -103,19 +102,18 @@ class _LoginScreenState extends State<LoginScreen> {
     final response = await _userRepository.login(
         usernameController.text, passwordController.text);
     Navigator.of(context).pop();
-    if (response is Result) {
-      final data = (response as Result<Map<String, dynamic>>).data;
-      UserManager().saveUser(json.encode(data['user']));
+    if (response.isSuccess()) {
+      UserManager().saveUser(json.encode(response.data!['user']));
       Navigator.of(context).pushReplacement(HomeScreen.screen());
       WidgetUtils.showFlushBar(
           context: context,
           title: 'Đăng Nhập Thành Công',
-          message: "Chào, " + data['user']['name']);
+          message: "Chào, " + response.data!['user']['name']);
     } else {
       WidgetUtils.showFlushBar(
           context: context,
           title: 'Lỗi Đăng Nhập',
-          message: (response as Error).exception.message);
+          message: response.exception!.message);
     }
   }
 }

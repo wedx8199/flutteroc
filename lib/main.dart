@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutteroc/screens/splash_screen.dart';
+import 'package:flutteroc/utils/app_colors.dart';
 
 void main() {
   runApp(MyApp());

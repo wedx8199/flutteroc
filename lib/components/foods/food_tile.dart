@@ -1,104 +1,27 @@
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutteroc/screens/screens.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
-import 'package:flushbar/flushbar.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:intl/intl.dart' as intl;
+import 'package:flutteroc/components/foods/selecting_food_dialog.dart';
+import 'package:flutteroc/data/data.dart';
+import 'package:flutteroc/models/food.dart';
+import 'package:flutteroc/repositories/food_repository.dart';
+import 'package:flutteroc/utils/food_utils.dart';
 import 'package:sticky_grouped_list/sticky_grouped_list.dart';
 
 class FoodTile extends StatefulWidget {
   List list;
-  int tableid;
+  int tableId;
   final VoidCallback refresh;
-  FoodTile({required this.list, required this.tableid, required this.refresh});
+
+  FoodTile({required this.list, required this.tableId, required this.refresh});
+
   @override
   _FoodTileState createState() => _FoodTileState();
 }
 
 class _FoodTileState extends State<FoodTile> {
-  final formatter = intl.NumberFormat.decimalPattern();
   final scrollController = GroupedItemScrollController();
-  final _form = GlobalKey<FormState>(); //for storing form state.
-
-  TextEditingController textquantity = new TextEditingController();
-  TextEditingController textghichu = new TextEditingController();
-
-  var userData;
-  @override
-  void initState() {
-    _getUserInfo();
-    super.initState();
-  }
-
-  void _getUserInfo() async {
-    SharedPreferences localStorage = await SharedPreferences.getInstance();
-    var userJson = localStorage.getString('user');
-    var user = json.decode(userJson!);
-    setState(() {
-      userData = user;
-    });
-  }
-
-  void _addOrder(context, idmon, namebar) async {
-    final isValid = _form.currentState!.validate();
-    if (!isValid) {
-      return;
-    } else {
-      String id = widget.tableid.toString();
-      String idfood = idmon.toString();
-      String idnv = userData['id'].toString();
-      String qqt = textquantity.text;
-      final response = await http.post(
-          Uri.parse(
-              "http://thunganoc377.knssoftworks.com/public/addorder/" + id),
-          body: {
-            //"id":widget.list[widget.index]['id'],
-            "id_user": idnv,
-            "id_food": idfood,
-            "quantity": textquantity.text,
-            "note": textghichu.text,
-          });
-
-      if (response.statusCode == 200) {
-        // If the server did return a 201 CREATED response,
-        // then parse the JSON.
-
-        //print(idmon);
-        //print(textquantity.text);
-        //print(tableid);
-        Navigator.pop(context);
-        textquantity.clear();
-        textghichu.clear();
-        Flushbar(
-          title: "Đã thêm món: " + namebar,
-          message: "Số lượng: " + qqt,
-          duration: Duration(seconds: 35),
-          isDismissible: true,
-          dismissDirection: FlushbarDismissDirection.HORIZONTAL,
-        ).show(context);
-      } else {
-        // If the server did not return a 201 CREATED response,
-        // then throw an exception.
-        throw Exception('Failed to POST.');
-      }
-    }
-  }
-
-  Future<List> getCat() async {
-    final rep =
-    await http.get(Uri.parse("http://thunganoc377.knssoftworks.com/first"));
-    if (rep.statusCode == 200) {
-      // If the server did return a 200 OK response,
-      // then parse the JSON.
-      return jsonDecode(rep.body);
-    } else {
-      // If the server did not return a 200 OK response,
-      // then throw an exception.
-      throw Exception('Failed to load');
-    }
-  }
+  final _foodRepository = FoodRepositoryImpl();
 
   Future scrollToUp(value) async {
     var s1 = int.parse(value);
@@ -108,24 +31,15 @@ class _FoodTileState extends State<FoodTile> {
         duration: Duration(milliseconds: 500),
         curve: Curves.easeInOutCubic);
   }
-  /*
-  Future scrollToDown() async {
-    scrollController.scrollTo(
-        index: 500,
-        duration: Duration(milliseconds: 500),
-        curve: Curves.easeInOutCubic);
-  }
-
-   */
 
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
       resizeToAvoidBottomInset: false,
       body: StickyGroupedListView<dynamic, String>(
+        key: PageStorageKey(widget.key),
         elements: widget.list,
         groupBy: (element) => element['cat_name'],
-
         groupSeparatorBuilder: (dynamic element) => Padding(
           padding: EdgeInsets.all(10),
           child: Row(
@@ -152,18 +66,18 @@ class _FoodTileState extends State<FoodTile> {
                   ],
                 ),
               ),
-              FutureBuilder<List>(
-                  future: getCat(),
+              FutureBuilder<ApiResponse<List>>(
+                  future: _foodRepository.getCategory(),
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
                       return PopupMenuButton<String>(
-                          itemBuilder: (context) => snapshot.data!
+                          itemBuilder: (context) => snapshot.data!.data!
                               .map((item) => PopupMenuItem<String>(
-                            value: item['id'].toString(),
-                            child: Text(
-                              item['cat_name'].toString(),
-                            ),
-                          ))
+                                    value: item['id'].toString(),
+                                    child: Text(
+                                      item['cat_name'].toString(),
+                                    ),
+                                  ))
                               .toList(),
                           onSelected: (value) {
                             //print(value);
@@ -181,7 +95,7 @@ class _FoodTileState extends State<FoodTile> {
                             //child: Icon(Icons.menu, color: Colors.white), <-- You can give your icon here
                           ));
                     } else if (snapshot.hasError) {
-                      return Text('Error loz: ${snapshot.error}');
+                      return Text('Lỗi: ${snapshot.error}');
                     }
                     return Text("Loading...");
                   }),
@@ -189,176 +103,73 @@ class _FoodTileState extends State<FoodTile> {
           ),
         ),
 
-        //itemBuilder: (context, dynamic element) => Text(element['name']),
         itemBuilder: (context, dynamic element) {
           return InkWell(
             onTap: () {
+              Food food = Food.fromJson(element);
               showDialog<String>(
                 context: context,
                 builder: (BuildContext context) => SingleChildScrollView(
-                  child: AlertDialog(
-                    title: Text('Chọn món: ' + element['name']),
-                    //content: Text('Đơn giá: '+list[index]['price'].toString()+'đ'),
-
-                    content: Container(
-                      height: 360,
-                      width: 400,
-                      child: SizedBox(
-                        height: MediaQuery.of(context).size.height,
-                        width: MediaQuery.of(context).size.width,
-                        child: Form(
-                          key: _form,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text('Đơn giá: ' +
-                                  formatter
-                                      .format(element['price'])
-                                      .toString() +
-                                  'đ'),
-                              TextFormField(
-                                keyboardType: TextInputType.number,
-                                controller: textquantity,
-                                validator: (text) {
-                                  if (text == null || text.isEmpty) {
-                                    return 'Nhập số lượng';
-                                  }
-                                  return null;
-                                },
-                                decoration: InputDecoration(
-                                  labelText: 'Số lượng',
-                                  icon: Icon(Icons.add_shopping_cart_rounded),
-                                ),
-                              ),
-                              TextFormField(
-                                keyboardType: TextInputType.text,
-                                controller: textghichu,
-                                decoration: InputDecoration(
-                                  labelText: 'Ghi chú',
-                                  icon: Icon(Icons.sticky_note_2_rounded),
-                                ),
-                              ),
-                              GestureDetector(
-                                child: Hero(
-                                  tag: 'imageHero',
-                                  child: Padding(
-                                    padding: EdgeInsets.symmetric(vertical: 10.0),
-                                    child: CachedNetworkImage(
-                                      imageUrl:
-                                      "http://thunganoc377.knssoftworks.com/public/source/foodimg/" +
-                                          element['img'].toString(),
-                                      width: MediaQuery.of(context).size.width,
-                                      height: 200,
-                                      placeholder: (context, url) => Center(
-                                          child: Container(
-                                              width: MediaQuery.of(context)
-                                                  .size
-                                                  .width,
-                                              height: MediaQuery.of(context)
-                                                  .size
-                                                  .height,
-                                              child:
-                                              new CircularProgressIndicator())),
-                                      errorWidget: (context, url, error) =>
-                                          Icon(Icons.error),
-                                    ),
-                                  ),
-                                ),
-                                onTap: () {
-                                  String imgname = element['img'].toString();
-                                  Navigator.push(context,
-                                      MaterialPageRoute(builder: (_) {
-                                        return FoodImageFullScreen(name: imgname);
-                                      }));
-                                },
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-
-                    actions: <Widget>[
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          TextButton(
-                            onPressed: () => Navigator.pop(context, 'Cancel'),
-                            child: const Text(
-                              'Cancel',
-                              style: TextStyle(
-                                  color: Color.fromRGBO(14, 28, 71, 1),
-                                  fontSize: 20.0,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                          TextButton(
-                            onPressed: () {
-                              int idmon = element['id'];
-                              String namebar = element['name'].toString();
-                              _addOrder(context, idmon, namebar);
-                              widget.refresh();
-                              //làm flushbar
-                            },
-                            child: const Text('OK',
-                                style: TextStyle(
-                                    color: Color.fromRGBO(14, 28, 71, 1),
-                                    fontSize: 20.0,
-                                    fontWeight: FontWeight.bold)),
-                          ),
-                        ],
-                      )
-                    ],
+                  child: SelectingFoodDialog(
+                    food: food,
+                    tableId: widget.tableId,
                   ),
                 ),
               );
             },
             child: Container(
-              padding: EdgeInsets.all(10.0),
+              padding: EdgeInsets.only(left: 10, bottom: 10, right: 10),
               decoration: BoxDecoration(),
               child: Card(
                   semanticContainer: true,
                   clipBehavior: Clip.antiAliasWithSaveLayer,
-                  elevation: 5,
+                  elevation: 4,
                   margin: const EdgeInsets.all(5),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       CachedNetworkImage(
                         imageUrl:
-                        "http://thunganoc377.knssoftworks.com/public/source/foodimg/" +
-                            element['img'].toString(),
+                            "http://thunganoc377.knssoftworks.com/public/source/foodimg/" +
+                                element['img'].toString(),
                         width: MediaQuery.of(context).size.width,
                         height: 200,
                         fit: BoxFit.cover,
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Expanded(
-                            child: ListTile(title: Text(element['name'])),
-                          ),
-                          Spacer(),
-                          Expanded(
-                            child: ListTile(
-                              title: Text(formatter
-                                  .format(element['price'])
-                                  .toString() +
-                                  ' đ'),
-                            ),
-                          ),
-                        ],
-                      )
+                      Padding(
+                        padding: EdgeInsets.only(
+                            left: 10, right: 10, top: 16, bottom: 16),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Expanded(
+                                child: Text(
+                              element['name'],
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 2,
+                              style: TextStyle(
+                                  fontSize: 16, fontWeight: FontWeight.w500),
+                            )),
+                            Padding(
+                                padding: EdgeInsets.only(left: 20),
+                                child: Text(
+                                    FoodUtils.formatPrice(element['price']),
+                                    style: TextStyle(
+                                        fontSize: 16, color: Colors.black87)))
+                          ],
+                        ),
+                      ),
                     ],
                   )),
             ),
           );
         },
         itemComparator: (item1, item2) =>
-            item1['name'].compareTo(item2['name']), // optional
+            item1['name'].compareTo(item2['name']),
+        // optional
         itemScrollController: scrollController,
-        floatingHeader: false, // optional
+        floatingHeader: false,
+        // optional
         order: StickyGroupedListOrder.ASC, // optional
       ),
     );

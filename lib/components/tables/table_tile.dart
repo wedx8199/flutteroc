@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutteroc/screens/screens.dart';
 
@@ -48,7 +47,10 @@ class TableTile extends StatelessWidget {
                       child: Stack(
                         children: [
                           ListTile(
-                            title: Text(list[index]['name']),
+                            title: Text(
+                              list[index]['name'],
+                              style: TextStyle(fontWeight: FontWeight.w500),
+                            ),
                             subtitle: Text(list[index]['status']),
                           ),
                           Positioned(

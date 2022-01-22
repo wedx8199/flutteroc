@@ -2,8 +2,8 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutteroc/managers/user_manager.dart';
-import 'package:flutteroc/network/response.dart';
 import 'package:flutteroc/repositories/user_repository.dart';
+import 'package:flutteroc/resources/styles.dart';
 import 'package:flutteroc/screens/splash_screen.dart';
 import 'package:flutteroc/utils/app_colors.dart';
 import 'package:flutteroc/utils/utils.dart';
@@ -88,13 +88,13 @@ class _SlidingMenuScreenState extends State<SlidingMenuScreen> {
                     actions: <Widget>[
                       TextButton(
                         onPressed: () => Navigator.pop(context),
-                        child: const Text('Không'),
+                        child: Text('Không', style: Styles.dialogActionButton),
                       ),
                       TextButton(
                         onPressed: () {
                           logout(context);
                         },
-                        child: const Text('Có'),
+                        child: Text('Có', style: Styles.dialogActionButton),
                       ),
                     ],
                   ),
@@ -138,7 +138,7 @@ class _SlidingMenuScreenState extends State<SlidingMenuScreen> {
 
   void logout(context) async {
     var response = await _userRepository.logout();
-    if (response is Result) {
+    if (response.isSuccess()) {
       UserManager().saveUser(null);
       Navigator.of(context).pushAndRemoveUntil(
           SplashScreen.screen(), (Route<dynamic> route) => false);
