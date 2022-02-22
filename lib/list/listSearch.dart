@@ -175,11 +175,137 @@ class _SearchItemsState extends State<SearchItems> {
               ),
               child: ListTile(
                 title: Text(_fudsOnSearch[index].name.toString()),
-                subtitle: Text(_fudsOnSearch[index].price.toString() + 'đ'),
+                subtitle: Text(formatter
+                        .format(_fudsOnSearch[index].price)
+                        .toString() +
+                    'đ'),
                 onTap: () {
                   showDialog<String>(
                     context: context,
                     builder: (BuildContext context) => SingleChildScrollView(
+                      child: AlertDialog(
+                        title: Text('Chọn món: ' + _fudsOnSearch[index].name.toString()),
+                        //content: Text('Đơn giá: '+list[index]['price'].toString()+'đ'),
+
+                        content: Container(
+                          height: 360,
+                          width: 400,
+                          child: SizedBox(
+                            height: MediaQuery.of(context).size.height,
+                            width: MediaQuery.of(context).size.width,
+                            child: Form(
+                              key: _form,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text('Đơn giá: ' +
+                                      formatter
+                                          .format(_fudsOnSearch[index].price)
+                                          .toString() +
+                                      'đ'),
+                                  TextFormField(
+                                    keyboardType: TextInputType.number,
+                                    controller: textquantity,
+                                    validator: (text) {
+                                      if (text == null || text.isEmpty) {
+                                        return 'Nhập số lượng';
+                                      }
+                                      return null;
+                                    },
+                                    decoration: InputDecoration(
+                                      labelText: 'Số lượng',
+                                      icon: Icon(Icons.add_shopping_cart_rounded),
+                                    ),
+                                  ),
+                                  TextFormField(
+                                    keyboardType: TextInputType.text,
+                                    controller: textghichu,
+                                    decoration: InputDecoration(
+                                      labelText: 'Ghi chú',
+                                      icon: Icon(Icons.sticky_note_2_rounded),
+                                    ),
+                                  ),
+                                  GestureDetector(
+                                    child: Hero(
+                                      tag: 'imageHero',
+                                      child: Padding(
+                                        padding: EdgeInsets.symmetric(vertical: 10.0),
+                                        child: CachedNetworkImage(
+                                          imageUrl:
+                                          "http://thunganoc377.knssoftworks.com/public/source/foodimg/" +
+                                              _fudsOnSearch[index].img.toString(),
+                                          width: MediaQuery.of(context).size.width,
+                                          height: 200,
+                                          placeholder: (context, url) => Center(
+                                              child: Container(
+                                                  width: MediaQuery.of(context)
+                                                      .size
+                                                      .width,
+                                                  height: MediaQuery.of(context)
+                                                      .size
+                                                      .height,
+                                                  child:
+                                                  new CircularProgressIndicator())),
+                                          errorWidget: (context, url, error) =>
+                                              Icon(Icons.error),
+                                        ),
+                                      ),
+                                    ),
+                                    onTap: () {
+                                      String imgname = _fudsOnSearch[index].img.toString();
+                                      Navigator.push(context,
+                                          MaterialPageRoute(builder: (_) {
+                                            return DetailScreen(name: imgname);
+                                          }));
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+
+                        actions: <Widget>[
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              TextButton(
+                                onPressed: () => Navigator.pop(context, 'Cancel'),
+                                child: const Text(
+                                  'Cancel',
+                                  style: TextStyle(
+                                      color: Color.fromRGBO(14, 28, 71, 1),
+                                      fontSize: 20.0,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  int? idmon = _fudsOnSearch[index].id;
+                                  String namebar = _fudsOnSearch[index].name.toString();
+                                  _addOrder(context, idmon, namebar);
+                                  //làm flushbar
+                                },
+                                child: const Text('OK',
+                                    style: TextStyle(
+                                        color: Color.fromRGBO(14, 28, 71, 1),
+                                        fontSize: 20.0,
+                                        fontWeight: FontWeight.bold)),
+                              ),
+                            ],
+                          )
+                        ],
+                      ),
+                    ),
+
+
+
+
+
+
+                       /*
+                        SingleChildScrollView(
                       child: AlertDialog(
                         title: Text('Chọn món: ' +
                             _fudsOnSearch[index].name.toString()),
@@ -295,6 +421,14 @@ class _SearchItemsState extends State<SearchItems> {
                         ],
                       ),
                     ),
+                    */
+
+
+
+
+
+
+
                   );
                 },
               ),

@@ -40,9 +40,10 @@ class _BillItemsState extends State<BillItems> {
 
       //print(idinfo);
       //print(textquantity.text);
-      Navigator.of(context).pushReplacement(
+      /*Navigator.of(context).pushReplacement(
         MaterialPageRoute(builder: (BuildContext context) => Tables()),
-      );
+      );*/
+      Navigator.pop(context);
       Flushbar(
         title: "Đã sửa hóa đơn món: " +
             namebar +
@@ -60,9 +61,10 @@ class _BillItemsState extends State<BillItems> {
     http.get(
         Uri.parse("http://thunganoc377.knssoftworks.com/public/delete/" + id));
 
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute(builder: (BuildContext context) => Tables()),
-    );
+      /*Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (BuildContext context) => Tables()),
+      );*/
+    Navigator.pop(context);
 
     Flushbar(
       title: "Đã xóa 1 món khỏi hóa đơn",
@@ -94,10 +96,8 @@ class _BillItemsState extends State<BillItems> {
   }
 
   @override
-  Widget build(
-    BuildContext context,
-  ) {
-    return Scaffold(
+  Widget build(BuildContext context) {
+    return widget.list.isEmpty ? Center(child: Text('Chưa có món, vui lòng chọn món')) : Scaffold(
       floatingActionButton: FloatingActionButton(
         backgroundColor: Color.fromRGBO(14, 28, 71, 1),
         onPressed: () {
@@ -261,55 +261,58 @@ class _BillItemsState extends State<BillItems> {
 
                             content: Form(
                               key: _form,
-                              child: Container(
-                                height: 300,
-                                width: 200,
-                                child: SizedBox(
-                                  height: MediaQuery.of(context).size.height,
-                                  width: MediaQuery.of(context).size.width,
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment:
+                              child:
+                              ConstrainedBox(
+                                  constraints: BoxConstraints(maxHeight: 140.0,maxWidth: 200.0),
+                                  child: Container(
+                                    child: SizedBox(
+                                      height: MediaQuery.of(context).size.height,
+                                      width: MediaQuery.of(context).size.width,
+                                      child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.start,
+                                        crossAxisAlignment:
                                         CrossAxisAlignment.start,
-                                    children: [
-                                      Text('Đơn giá: ' +
-                                          formatter
-                                              .format(
+                                        children: [
+                                          Text('Đơn giá: ' +
+                                              formatter
+                                                  .format(
                                                   widget.list[index]['price'])
-                                              .toString() +
-                                          'đ'),
-                                      Text('Số lượng: ' +
-                                          widget.list[index]['quantity']
-                                              .toString()),
-                                      Text('Tổng: ' +
-                                          formatter
-                                              .format(
+                                                  .toString() +
+                                              'đ'),
+                                          Text('Số lượng: ' +
+                                              widget.list[index]['quantity']
+                                                  .toString()),
+                                          Text('Tổng: ' +
+                                              formatter
+                                                  .format(
                                                   widget.list[index]['total'])
-                                              .toString() +
-                                          'đ'),
-                                      TextFormField(
-                                        keyboardType: TextInputType.number,
-                                        controller: textquantity =
-                                            TextEditingController(
-                                                text: widget.list[index]
-                                                        ['quantity']
-                                                    .toString()),
-                                        validator: (text) {
-                                          if (text == null || text.isEmpty) {
-                                            return 'Nhập số lượng';
-                                          }
-                                          return null;
-                                        },
-                                        decoration: InputDecoration(
-                                          labelText: 'Số lượng',
-                                          icon: Icon(
-                                              Icons.add_shopping_cart_rounded),
-                                        ),
+                                                  .toString() +
+                                              'đ'),
+                                          TextFormField(
+                                            keyboardType: TextInputType.number,
+                                            controller: textquantity =
+                                                TextEditingController(
+                                                    text: widget.list[index]
+                                                    ['quantity']
+                                                        .toString()),
+                                            validator: (text) {
+                                              if (text == null || text.isEmpty) {
+                                                return 'Nhập số lượng';
+                                              }
+                                              return null;
+                                            },
+                                            decoration: InputDecoration(
+                                              labelText: 'Số lượng',
+                                              icon: Icon(
+                                                  Icons.add_shopping_cart_rounded),
+                                            ),
+                                          ),
+                                        ],
                                       ),
-                                    ],
+                                    ),
                                   ),
-                                ),
                               ),
+
                             ),
 
                             actions: <Widget>[

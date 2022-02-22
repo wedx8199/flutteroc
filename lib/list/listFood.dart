@@ -88,7 +88,7 @@ class _FoodItemsState extends State<FoodItems> {
 
   Future<List> getCat() async {
     final rep =
-        await http.get(Uri.parse("http://thunganoc377.knssoftworks.com/first"));
+        await http.get(Uri.parse("http://thunganoc377.knssoftworks.com/public/first"));
     if (rep.statusCode == 200) {
       // If the server did return a 200 OK response,
       // then parse the JSON.
@@ -201,7 +201,7 @@ class _FoodItemsState extends State<FoodItems> {
                     //content: Text('Đơn giá: '+list[index]['price'].toString()+'đ'),
 
                     content: Container(
-                      height: 340,
+                      height: 360,
                       width: 400,
                       child: SizedBox(
                         height: MediaQuery.of(context).size.height,
@@ -242,25 +242,29 @@ class _FoodItemsState extends State<FoodItems> {
                               GestureDetector(
                                 child: Hero(
                                     tag: 'imageHero',
-                                    child: CachedNetworkImage(
-                                      imageUrl:
-                                          "http://thunganoc377.knssoftworks.com/public/source/foodimg/" +
-                                              element['img'].toString(),
-                                      width: MediaQuery.of(context).size.width,
-                                      height: 200,
-                                      placeholder: (context, url) => Center(
-                                          child: Container(
-                                              width: MediaQuery.of(context)
-                                                  .size
-                                                  .width,
-                                              height: MediaQuery.of(context)
-                                                  .size
-                                                  .height,
-                                              child:
-                                                  new CircularProgressIndicator())),
-                                      errorWidget: (context, url, error) =>
-                                          Icon(Icons.error),
-                                    )),
+                                    child: Padding(
+                                      padding: EdgeInsets.symmetric(vertical: 10.0),
+                                      child: CachedNetworkImage(
+                                        imageUrl:
+                                        "http://thunganoc377.knssoftworks.com/public/source/foodimg/" +
+                                            element['img'].toString(),
+                                        width: MediaQuery.of(context).size.width,
+                                        height: 200,
+                                        placeholder: (context, url) => Center(
+                                            child: Container(
+                                                width: MediaQuery.of(context)
+                                                    .size
+                                                    .width,
+                                                height: MediaQuery.of(context)
+                                                    .size
+                                                    .height,
+                                                child:
+                                                new CircularProgressIndicator())),
+                                        errorWidget: (context, url, error) =>
+                                            Icon(Icons.error),
+                                      ),
+                                    ),
+                                    ),
                                 onTap: () {
                                   String imgname = element['img'].toString();
                                   Navigator.push(context,
@@ -330,13 +334,13 @@ class _FoodItemsState extends State<FoodItems> {
                         fit: BoxFit.cover,
                       ),
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Expanded(
-                              flex: 4,
-                              child: ListTile(title: Text(element['name']))),
+                              child: ListTile(title: Text(element['name'])),
+                          ),
+                          Spacer(),
                           Expanded(
-                            flex: 2,
                             child: ListTile(
                               title: Text(formatter
                                       .format(element['price'])
