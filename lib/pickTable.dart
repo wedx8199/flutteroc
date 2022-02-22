@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutteroc/sidebar.dart' show Sidebar;
+import 'package:flutteroc/sidebar.dart';
 import 'dart:async';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'list/listTable.dart';
-import 'userInfo.dart';
 
-import 'package:shared_preferences/shared_preferences.dart';
 
 class Tables extends StatefulWidget {
   @override
@@ -42,17 +40,17 @@ class _TablesState extends State<Tables> {
     }
   }
 
+  final GlobalKey<ScaffoldState> _drawerKey = new GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _drawerKey,
       drawer: Sidebar(),
       appBar: AppBar(
         backgroundColor: Color.fromRGBO(14, 28, 71, 1),
         leading: IconButton(
-          icon: Icon(Icons.list_rounded),
-          onPressed: () {
-            Sidebar();
-          },
+          icon: Icon(Icons.person),
+          onPressed: () => _drawerKey.currentState!.openDrawer(),
         ),
         title: Text('Ốc chill 377'),
         automaticallyImplyLeading: false, //bá dơ

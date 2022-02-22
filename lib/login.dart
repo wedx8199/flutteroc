@@ -75,6 +75,7 @@ class _LoginState extends State<Login> {
     }
   }
 
+  bool _loadlogin = false;
   @override
   Widget build(BuildContext context) {
     final data = MediaQuery.of(context);
@@ -118,71 +119,89 @@ class _LoginState extends State<Login> {
       },
     );
 
-    return Scaffold(
+
+    return _loadlogin? new Scaffold(
+        body: SafeArea(
+            child: Center(
+                child: Container(
+                  color: Colors.grey[300],
+                  width: 70.0,
+                  height: 70.0,
+                  child: new Padding(padding: const EdgeInsets.all(5.0),child: new Center(child: new CircularProgressIndicator())),
+                ),
+            ),
+        ),
+    ): new Scaffold(
       resizeToAvoidBottomInset: false,
       body: Center(
-        child: Container(
-          height: data.size.height,
-          color: Color.fromRGBO(14, 28, 71, 1),
-          child: Stack(
-            children: [
-              new Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  new Container(
-                    margin: new EdgeInsets.all(10.0),
-                    child: new Image.asset(
-                      'assets/logo.png',
-                      width: 280,
-                      height: 280,
+        child: SingleChildScrollView(
+          child: Container(
+            height: data.size.height,
+            color: Color.fromRGBO(14, 28, 71, 1),
+            child: Stack(
+              children: [
+                new Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    new Container(
+                      margin: new EdgeInsets.all(10.0),
+                      child: new Image.asset(
+                        'assets/logo.png',
+                        width: 280,
+                        height: 280,
+                      ),
                     ),
-                  ),
-                  new Container(
-                    margin: new EdgeInsets.all(20.0),
-                    decoration: new BoxDecoration(
-                      border: new Border.all(color: Colors.black, width: 1.0),
-                      borderRadius: BorderRadius.all(Radius.circular(6.0)),
+                    new Container(
+                      margin: new EdgeInsets.all(20.0),
+                      decoration: new BoxDecoration(
+                        border: new Border.all(color: Colors.black, width: 1.0),
+                        borderRadius: BorderRadius.all(Radius.circular(6.0)),
+                      ),
+                      child: textbox,
                     ),
-                    child: textbox,
-                  ),
-                  new Container(
-                    width: data.size.width,
-                    margin: new EdgeInsets.only(left: 20, right: 20),
-                    decoration: new BoxDecoration(
-                      border: new Border.all(color: Colors.black, width: 1.0),
-                      borderRadius: BorderRadius.all(Radius.circular(6.0)),
+                    new Container(
+                      width: data.size.width,
+                      margin: new EdgeInsets.only(left: 20, right: 20),
+                      decoration: new BoxDecoration(
+                        border: new Border.all(color: Colors.black, width: 1.0),
+                        borderRadius: BorderRadius.all(Radius.circular(6.0)),
+                      ),
+                      child: textbox2,
                     ),
-                    child: textbox2,
-                  ),
-                  SizedBox(
-                    height: 30,
-                  ),
-                  new Container(
-                    width: data.size.width,
-                    margin: new EdgeInsets.only(left: 20, right: 20),
-                    child: SizedBox(
-                      height: 48,
-                      width: MediaQuery.of(context).size.width,
-                      child: TextButton(
-                        style: TextButton.styleFrom(
-                          backgroundColor: Colors.yellow,
-                          primary: Color.fromRGBO(14, 28, 71, 1),
-                        ),
-                        onPressed: () {
-                          logIN(context);
-                        },
-                        child: Text(
-                          'Đăng Nhập',
-                          style: TextStyle(
-                              fontSize: 20, fontWeight: FontWeight.bold),
+                    SizedBox(
+                      height: 30,
+                    ),
+                    new Container(
+                      width: data.size.width,
+                      margin: new EdgeInsets.only(left: 20, right: 20),
+                      child: SizedBox(
+                        height: 48,
+                        width: MediaQuery.of(context).size.width,
+                        child: TextButton(
+                          style: TextButton.styleFrom(
+                            backgroundColor: Colors.yellow,
+                            primary: Color.fromRGBO(14, 28, 71, 1),
+                          ),
+                          onPressed: () {
+                            setState((){
+                              _loadlogin=true;
+                            });
+                            logIN(context);
+                          },
+                          child: Text(
+                            'Đăng Nhập',
+                            style: TextStyle(
+                                fontSize: 20, fontWeight: FontWeight.bold),
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ],
-              ),
-            ],
+                  ],
+                ),
+              ],
+            ),
           ),
+
         ),
       ),
     );

@@ -7,7 +7,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Sidebar extends StatefulWidget {
-  const Sidebar({Key? key}) : super(key: key);
+  Sidebar({Key? key}) : super(key: key);
 
   @override
   State<Sidebar> createState() => _SidebarState();
@@ -47,7 +47,7 @@ class _SidebarState extends State<Sidebar> {
     var body = json.decode(res.body);
     if (body['success']) {
       SharedPreferences localStorage = await SharedPreferences.getInstance();
-      localStorage.remove('user');
+      await localStorage.clear();
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(builder: (BuildContext context) => Login()),
       );
@@ -82,8 +82,9 @@ class _SidebarState extends State<Sidebar> {
                     style: new TextStyle(
                         color: Colors.red, fontWeight: FontWeight.bold)),
                 currentAccountPicture: CircleAvatar(
-                  child: CachedNetworkImage(
-                    imageUrl: "https://crop-circle.imageonline.co/image.png",
+                  backgroundColor: Colors.white24,
+                  child: Image.asset(
+                    'assets/logo.png',
                     width: 128,
                     height: 128,
                     fit: BoxFit.cover,
@@ -92,8 +93,8 @@ class _SidebarState extends State<Sidebar> {
               ),
             ),
             ListTile(
-              leading: const Icon(Icons.manage_accounts,
-                  color: Color.fromRGBO(14, 28, 71, 1)),
+              leading: const Icon(Icons.library_books_outlined,
+                  color: Colors.deepPurple),
               title: const Text(
                 'Chính sách',
                 style: TextStyle(color: Color.fromRGBO(14, 28, 71, 1)),
@@ -102,8 +103,8 @@ class _SidebarState extends State<Sidebar> {
             ),
             const Divider(color: Color.fromRGBO(14, 28, 71, 1)),
             ListTile(
-              leading: const Icon(Icons.notifications,
-                  color: Color.fromRGBO(14, 28, 71, 1)),
+              leading: const Icon(Icons.call,
+                  color: Colors.lightGreen),
               title: const Text('Hỗ trợ',
                   style: TextStyle(color: Color.fromRGBO(14, 28, 71, 1))),
               onTap: () {},
@@ -111,7 +112,7 @@ class _SidebarState extends State<Sidebar> {
             const Divider(color: Color.fromRGBO(14, 28, 71, 1)),
             ListTile(
               leading: const Icon(Icons.exit_to_app,
-                  color: Color.fromRGBO(14, 28, 71, 1)),
+                  color: Colors.redAccent),
               title: const Text('Đăng xuất',
                   style: TextStyle(color: Color.fromRGBO(14, 28, 71, 1))),
               onTap: () {
@@ -155,24 +156,24 @@ class _SidebarState extends State<Sidebar> {
                               children: <Widget>[
                                 Divider(),
                                 Padding(
-                                  padding: const EdgeInsets.only(left: 30),
+                                  padding: const EdgeInsets.all(5.0),
                                   child: ListTile(
                                       title: Text(
-                                    'Bản quyền thuộc về ' + 'Knssoftwork',
+                                        'Version 1.0.0',
                                     style: TextStyle(
                                         color: Color.fromRGBO(14, 28, 71, 1),
                                         fontSize: 13,
                                         fontWeight: FontWeight.bold),
-                                  )),
-                                ),
-                                Padding(
-                                    padding: const EdgeInsets.only(left: 80),
-                                    child: ListTile(
-                                        title: Text(
-                                      'Version 1.0.0',
+                                  ),
+                                    subtitle: Text(
+                                      '© ' + 'KNS Softworks',
                                       style: TextStyle(
-                                          color: Color.fromRGBO(14, 28, 71, 1)),
-                                    ))),
+                                          color: Color.fromRGBO(14, 28, 71, 1),
+                                          fontSize: 13,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                ),
                               ],
                             ))),
                   ),
